@@ -1,0 +1,222 @@
+<html>
+<head>
+  <style>
+    
+    #resetButton {
+      margin-right: 20px;
+      background-color: #0000ff;
+      color: #ffffff;
+      width: 80px; 
+      height: 80px;
+      font-family: "IMPACT", serif;
+      font-size: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 50px;
+      border: none;
+      cursor: pointer;
+      border: 3px solid #000000;
+      text-shadow: 2px 2px 2px black;
+			transition: all 0.4s ease;
+    }
+    
+    #resetButton:hover {
+			background-color: #4763ff; 
+       transform: scale(1.1); 
+      box-shadow: 0 0 10px rgba(71, 99, 255, 0.7);}
+      #resetButton:active{
+			transform: scale(0.75);
+			box-shadow:none;
+		}
+    
+    #introScreen {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+      background-color: black;
+      text-align: center;
+    }
+
+    #game {
+      display: none; /* Hide the game initially */
+    }
+    
+    #startButton {
+      background-color: #28a745;
+      color: black;
+      padding: 20px 40px;
+      font-size: 20px;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-top: 20px;
+      transition: all 0.3s ease;
+    }
+
+    #startButton:hover {
+      background-color: #218838;
+      transform: scale(1.05);
+      box-shadow: 0 0 10px rgba(71, 255, 99, 0.7);}
+    }
+    
+    #startButton:active{
+			transform: scale(0.75);
+			box-shadow:none;
+		}
+    .button-column {
+      display: flex;
+      flex-direction: column; 
+    }
+    </style>
+</head>
+
+<body>
+  <div id="introScreen">
+    <h1>Tic-Tac-Toe</h1>
+    <p>The very intense game</p>
+    <button id="startButton">Start Game</button>
+  </div>
+  
+<div id="game">
+  <div id="heading"></div>
+  <div id="grid">
+    <div class="cell" data-index="0"></div>
+    <div class="cell" data-index="1"></div>
+    <div class="cell" data-index="2"></div>
+    <div class="cell" data-index="3"></div>
+    <div class="cell" data-index="4"></div>
+    <div class="cell" data-index="5"></div>
+    <div class="cell" data-index="6"></div>
+    <div class="cell" data-index="7"></div>
+    <div class="cell" data-index="8"></div>
+    <button id="resetButton">RESET 🔄</button>
+
+  </div>
+</div>
+  
+  
+  <script>
+    const startButton = document.querySelector('#startButton');
+    const introScreen = document.querySelector('#introScreen');
+    const gameScreen = document.querySelector('#game');
+    const RESET = document.querySelector('#RESET');
+    const cells = document.querySelectorAll('.cell');
+    const heading = document.querySelector('#heading');
+
+    let board = Array(9).fill(null);
+    let currentPlayer = 'X';
+    let gameActive = true;
+    
+    const checkWinner = () => {
+      const winPatterns = [
+        [0, 1, 2],  // Row 1
+        [3, 4, 5],  // Row 2
+        [6, 7, 8],  // Row 3
+        [0, 3, 6],  // Column 1
+        [1, 4, 7],  // Column 2
+        [2, 5, 8],  // Column 3
+        [0, 4, 8],  // Diagonal 1
+        [2, 4, 6]   // Diagonal 2
+      ];
+      
+      for (let pattern of winPatterns) {
+        const [a, b, c] = pattern;
+        if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+          return board[a];  // Return the winner ('X' or 'O')
+        }
+      }
+      return null;  // No winner yet
+    };
+    
+    const handleCellClick = (event) => {
+      const cellIndex = event.target.getAttribute('data-index');
+    
+     if (board[cellIndex] || !gameActive) return;  // Ignore if cell is filled or game is over
+
+      // Mark the cell with the current player's symbol
+      board[cellIndex] = currentPlayer;
+      event.target.textContent = currentPlayer;
+
+      // Check if there's a winner
+      const winner = checkWinner();
+      if (winner) {
+        heading.textContent = `${winner} wins!`;
+        gameActive = false;  // End the game
+        return;
+      }
+
+      // Check if it's a draw (no more empty cells)
+      if (!board.includes(null)) {
+        heading.textContent = 'You both suck!';
+        gameActive = false;
+        return;
+      }
+
+      // Switch to the other player
+      currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+      heading.textContent = `Player ${currentPlayer}'s turn`;
+    };
+
+    // Function to reset the game
+    const resetGame = () => {
+      board = Array(9).fill(null);  // Reset the board
+      cells.forEach(cell => cell.textContent = '');  // Clear the cells
+      currentPlayer = 'X';  // Reset to player 'X'
+      gameActive = true;  // Set the game to active
+      heading.textContent = "Player X's turn";  // Set initial heading
+    };
+    
+    const startGame = () => {
+      introScreen.style.display = 'none';  // Hide the intro screen
+      gameScreen.style.display = 'block';  // Show the game screen
+    };
+    // Add event listeners to all cells
+    cells.forEach(cell => cell.addEventListener('click', handleCellClick));
+
+    startButton.addEventListener('click', startGame); // Start the game
+    resetButton.addEventListener('click', resetGame); // Reset the game
+
+    // Initial heading text
+    heading.textContent = "Player X's turn";
+  </script>
+  </body>
+</html>
+
+
+body
+{
+  background-color: black;
+  color: #c0c0c0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+#heading
+{
+  display: block;
+  width: 100%;
+}
+#game
+{
+  display: grid;
+}
+#grid
+{
+  display: grid;
+  grid-template-columns: 3fr 3fr 3fr;
+}
+
+.cell
+{
+  border: 5px solid grey;
+  width: 150px;
+  height: 150px;
+  cursor: pointer;
+  font-size: 125px;
+  border-radius: 20px;
+} 
